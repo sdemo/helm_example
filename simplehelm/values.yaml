@@ -5,7 +5,7 @@
 replicaCount: 2
 image:
   repository: "35.224.208.129:8082/docker-local/simplehelm"
-  tag: ${res_simplehelmDockerImage_imageTag}
+  tag: ${res_helm_app_image_imageTag}
   pullPolicy: IfNotPresent
   port: 80
 
