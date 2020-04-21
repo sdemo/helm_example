@@ -34,6 +34,7 @@ resources:
   - name: helm_app_info
     type: BuildInfo
     configuration:
+      sourceArtifactory: demoArt
       buildName: ${pipeline_name}
       buildNumber: ${run_number}
 
