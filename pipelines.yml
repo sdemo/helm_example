@@ -2,7 +2,7 @@ resources:
   - name: simplehelm_chart
     type: HelmChart
     configuration:
-      sourceArtifactory: art
+      sourceArtifactory: demoArt
       repository: helm
       chart: simplehelm
       version: 0.0.0
@@ -10,7 +10,7 @@ resources:
   - name: helm_chart_changes
     type: GitRepo
     configuration:
-      gitProvider: john_bbs
+      gitProvider: sdemo_github
       path: sdemo/helm_example
       files:
         include: "simplehelm.*"
@@ -59,6 +59,8 @@ pipelines:
             - name: demoArt
           outputResources:
             - name: helm_app_image
+          inputSteps:
+            - name: build
 
       # - name: publish_helm_chart
       #   type: HelmPublish
