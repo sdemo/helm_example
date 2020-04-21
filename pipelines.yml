@@ -1,0 +1,83 @@
+resources:
+  - name: simplehelm_chart
+    type: HelmChart
+    configuration:
+      sourceArtifactory: art
+      repository: helm
+      chart: simplehelm
+      version: 0.0.0
+
+  - name: helm_chart_changes
+    type: GitRepo
+    configuration:
+      gitProvider: john_bbs
+      path: sdemo/helm_example
+      files:
+        include: "simplehelm.*"
+
+  - name: helm_app_changes
+    type: GitRepo
+    configuration:
+      gitProvider: sdemo_github
+      path: sdemo/helm_example
+      files:
+        exclude: "simplehelm.*"
+
+  - name: helm_app_image
+    type: Image
+    configuration:
+      registry: demoArt
+      sourceRepository: docker-local
+      imageName: 35.224.208.129:8082/docker-local/simplehelm
+      imageTag: latest
+
+
+pipelines:
+  - name: helm_example
+    steps:
+      - name: build
+        type: DockerBuild
+        configuration:
+          affinityGroup: BuildAndPush
+          dockerFileLocation: .
+          dockerFileName: Dockerfile
+          dockerImageName: "35.224.208.129:8082/docker-local/simplehelm"
+          dockerImageTag: {{gitBranch}}.${step_number}
+          dockerOptions: "--no-cache --build-arg STEP_URL=${step_url}"
+          integrations:
+            - name: demoArt
+          inputResources:
+            - name: helm_app_changes
+
+      - name: push
+        type: DockerPush
+        configuration:
+          affinityGroup: BuildAndPush
+          targetRepository: docker-local
+          autoPublishBuildInfo: true
+          integrations:
+            - name: demoArt
+          outputResources:
+            - name: helm_app_image
+
+      # - name: publish_helm_chart
+      #   type: HelmPublish
+      #   configuration:
+      #     inputResources:
+      #       - name: simplehelmRepo_chart
+      #     outputResources:
+      #       - name: simplehelmChart
+      #     chartPath: ./simplehelm
+
+      # - name: deploy_helm_chart
+      #   type: HelmDeploy
+      #   configuration:
+      #     integrations:
+      #       - name: tr_kubernetes
+      #     inputResources:
+      #       - name: simplehelmChart
+      #       - name: simplehelmDockerImage
+      #     releaseName: simplehelm
+      #     flags: "--namespace dev"
+      #     valueFilePaths:
+      #       - values.yaml
