@@ -70,24 +70,24 @@ pipelines:
           inputSteps:
             - name: build
 
-      # - name: publish_helm_chart
-      #   type: HelmPublish
-      #   configuration:
-      #     inputResources:
-      #       - name: simplehelmRepo_chart
-      #     outputResources:
-      #       - name: simplehelmChart
-      #     chartPath: ./simplehelm
+      - name: publish_helm_chart
+        type: HelmPublish
+        configuration:
+          inputResources:
+            - name: helm_chart_changes
+          outputResources:
+            - name: simplehelm_chart
+          chartPath: simplehelm
 
-      # - name: deploy_helm_chart
-      #   type: HelmDeploy
-      #   configuration:
-      #     integrations:
-      #       - name: tr_kubernetes
-      #     inputResources:
-      #       - name: simplehelmChart
-      #       - name: simplehelmDockerImage
-      #     releaseName: simplehelm
-      #     flags: "--namespace dev"
-      #     valueFilePaths:
-      #       - values.yaml
+      - name: deploy_helm_chart
+        type: HelmDeploy
+        configuration:
+          integrations:
+            - name: sdemo_kube
+          inputResources:
+            - name: simplehelm_chart
+            - name: helm_app_image
+          releaseName: simplehelm
+          flags: "--set imagepullsecrets=kube-demo"
+          valueFilePaths:
+            - values.yaml

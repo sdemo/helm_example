@@ -9,7 +9,7 @@ image:
   pullPolicy: IfNotPresent
   port: 80
 
-imagePullSecrets: []
+imagePullSecrets: ""
 nameOverride: ""
 fullnameOverride: ""
 
