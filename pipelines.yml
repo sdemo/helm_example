@@ -31,6 +31,12 @@ resources:
       imageName: 35.224.208.129:8082/docker-local/simplehelm
       imageTag: latest
 
+  - name: helm_app_info
+    type: BuildInfo
+    configuration:
+      buildName: ${pipeline_name}
+      buildNumber: ${run_number}
+
 
 pipelines:
   - name: helm_example
@@ -42,7 +48,7 @@ pipelines:
           dockerFileLocation: .
           dockerFileName: Dockerfile
           dockerImageName: "35.224.208.129:8082/docker-local/simplehelm"
-          dockerImageTag: {{gitBranch}}.${step_number}
+          dockerImageTag: {{gitBranch}}.${run_number}
           dockerOptions: "--no-cache --build-arg STEP_URL=${step_url}"
           integrations:
             - name: demoArt
@@ -59,6 +65,7 @@ pipelines:
             - name: demoArt
           outputResources:
             - name: helm_app_image
+            - name: helm_app_info
           inputSteps:
             - name: build
 
