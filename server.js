@@ -10,7 +10,7 @@ app.get('/', function(req, res) {
   var response ='<html>';
   response += '<h2>Hello, frogs!</h2><br />';
   if (process.env.STEP_URL)
-    response += '<i>This image created by: ' + process.env.STEP_URL + '</i>';
+    response += '<i>This image created by a </i><a href=' + process.env.STEP_URL + '>JFrog Pipelines Step</a>';
   response += '</html>';
   res.send(response);
 });
