@@ -4,6 +4,7 @@ var app = express();
 
 console.log('starting');
 
+// only one route
 app.get('/', function(req, res) {
   console.log('got a request!');
   var response ='<html>';
